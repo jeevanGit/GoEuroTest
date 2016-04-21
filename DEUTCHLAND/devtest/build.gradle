@@ -1,0 +1,37 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+jar {
+  manifest{
+    attributes 'Main-Class': 'devtest.Driver'
+  }
+  
+   from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+   }
+}
+
+// This is where the folder structire is c
+task initSourceFolders { 
+   sourceSets*.java.srcDirs*.each { it.mkdirs() }
+   sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.10'
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    mavenCentral()
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    // The production code uses the SLF4J logging API at compile time
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.0.1'
+    compile 'ch.qos.logback:logback-classic:1.0.13'
+    testCompile "junit:junit:4.11"
+}
